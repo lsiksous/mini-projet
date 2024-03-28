@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  namenode1:
+    image: lsiksous/hadoop_mini:latest
+    command: "--master --master-ip 172.17.0.2"
+    container_name: namenode1
+    networks:
+      - hadoop_network
+  datanode1:
+    image: lsiksous/hadoop_mini:latest
+    command: "--slave --master-ip 172.17.0.2"
+    container_name: datanode2
+    networks:
+      - hadoop_network
+  datanode2:
+    image: lsiksous/hadoop_mini:latest
+    command: "--slave --master-ip 172.17.0.2"
+    container_name: datanode2
+    networks:
+      - hadoop_network
+  datanode3:
+    image: lsiksous/hadoop_mini:latest
+    command: "--slave --master-ip 172.17.0.2"
+    container_name: datanode2
+    networks:
+      - hadoop_network
+
+networks:
+  hadoop_network:
