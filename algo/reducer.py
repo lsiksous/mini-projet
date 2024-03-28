@@ -48,7 +48,7 @@ with open("Result/ReducerData.txt", "w") as f:
 
                 del salaireList[:]
 
-                data = "{} {} {} {}\n".format(current_age, moyenne_salaire, ecartype, current_counter)
+                data = "{}\t{}\t{}\t{}\n".format(current_age, moyenne_salaire, ecartype, current_counter)
                 f.write(data)
             current_age = age
             current_counter = counter
@@ -60,6 +60,6 @@ with open("Result/ReducerData.txt", "w") as f:
         moyenne_salaire = calculMoyenne(sumSalaire, current_counter)
         ecartype = ecartType(salaireList, moyenne_salaire, current_counter)
         del salaireList[:]
-        data = "{} {} {} {}\n".format(current_age, moyenne_salaire, ecartype, current_counter)
+        data = "{}\t{}\t{}\t{}\n".format(current_age, moyenne_salaire, ecartype, current_counter)
         f.write(data)
 f.close()
