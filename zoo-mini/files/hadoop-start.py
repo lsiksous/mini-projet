@@ -21,6 +21,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--master-ip", "-a", help="The IP for Hadoop master. If no value provided, the script tries to find the primary IP address by itself.", default=get_ip())
 parser.add_argument("--master", help="Set node as Hadoop Master", action='store_true')
 parser.add_argument("--slave", help="Set node as Hadoop Slave", action='store_true')
+parser.add_argument("--keeper", help="Set node as a Zookeeper", action='store_true')
 
 parser.add_argument("--yarn-cores", help="YARN: Max cores allowed to the cluster", default=8)
 parser.add_argument("--yarn-mem", help="YARN: Max memory allowed to the cluster, should be the addition of number of workers*memory per worker", default=4096)
@@ -43,7 +44,9 @@ import shutil
 os.environ["JAVA_HOME"] = os.path.dirname(os.path.dirname(os.path.realpath(shutil.which("javac"))))
 
 HADOOP_CONF_DIR = os.environ["HADOOP_CONF_DIR"]
+ZOO_CONF_DIR = os.environ["ZOO_CONF_DIR"]
 HADOOP_HOME = os.environ["HADOOP_HOME"]
+ZOO_HOME = os.environ["ZOO_HOME"]
 HADOOP_LOG_DIR = os.environ["HADOOP_LOG_DIR"]
 USER = pwd.getpwuid(os.getuid())[0]
 
@@ -118,7 +121,12 @@ elif args.slave:
     print("YARN NodeManager start")
     os.system(f"{HADOOP_HOME}/bin/yarn --daemon start nodemanager")
 
-print("DONE launch")
-print("Log files:")
-os.system(f"cat {HADOOP_LOG_DIR}/*")
-os.system(f"tail -f {HADOOP_LOG_DIR}/*")
+elif args.keeper:
+    print("Zookeeper start")
+    os.system(f"{ZOO_HOME}/bin/zkServer.sh start")
+
+if not args.keeper:
+    print("DONE launch")
+    print("Log files:")
+    os.system(f"cat {HADOOP_LOG_DIR}/*")
+    os.system(f"tail -f {HADOOP_LOG_DIR}/*")

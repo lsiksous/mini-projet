@@ -1,30 +1,53 @@
 version: '3.8'
 
 services:
-  namenode1:
-    image: lsiksous/hadoop_mini:latest
-    command: "--master --master-ip 172.17.0.2"
-    container_name: namenode1
+  nn1:
+    image: lsiksous/zoo_mini:latest
+    command: "--master"
+    container_name: nn1
     networks:
-      - hadoop_network
-  datanode1:
-    image: lsiksous/hadoop_mini:latest
-    command: "--slave --master-ip 172.17.0.2"
-    container_name: datanode2
+      zoo_network:
+        ipv4_address: 172.28.1.1
+  nn2:
+    image: lsiksous/zoo_mini:latest
+    command: "--master"
+    container_name: nn2
     networks:
-      - hadoop_network
-  datanode2:
-    image: lsiksous/hadoop_mini:latest
-    command: "--slave --master-ip 172.17.0.2"
-    container_name: datanode2
+      zoo_network:
+        ipv4_address: 172.28.1.2
+  zk1:
+    image: lsiksous/zoo_mini:latest
+    command: "--keeper"
+    container_name: zk1
     networks:
-      - hadoop_network
-  datanode3:
-    image: lsiksous/hadoop_mini:latest
-    command: "--slave --master-ip 172.17.0.2"
-    container_name: datanode2
+      zoo_network:
+        ipv4_address: 172.28.2.1
+  dn1:
+    image: lsiksous/zoo_mini:latest
+    command: "--slave --master-ip 172.28.1.1"
+    container_name: dn1
     networks:
-      - hadoop_network
+      zoo_network:
+        ipv4_address: 172.28.3.1
+  dn2:
+    image: lsiksous/zoo_mini:latest
+    command: "--slave --master-ip 172.28.1.1"
+    container_name: dn2
+    networks:
+      zoo_network:
+        ipv4_address: 172.28.3.2
+  dn3:
+    image: lsiksous/zoo_mini:latest
+    command: "--slave --master-ip 172.28.1.1"
+    container_name: dn3
+    networks:
+      zoo_network:
+        ipv4_address: 172.28.3.3
 
 networks:
-  hadoop_network:
+  zoo_network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.28.0.0/16
