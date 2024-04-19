@@ -21,7 +21,6 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--master-ip", "-a", help="The IP for Hadoop master. If no value provided, the script tries to find the primary IP address by itself.", default=get_ip())
 parser.add_argument("--master", help="Set node as Hadoop Master", action='store_true')
 parser.add_argument("--slave", help="Set node as Hadoop Slave", action='store_true')
-parser.add_argument("--keeper", help="Set node as a Zookeeper", action='store_true')
 
 parser.add_argument("--yarn-cores", help="YARN: Max cores allowed to the cluster", default=8)
 parser.add_argument("--yarn-mem", help="YARN: Max memory allowed to the cluster, should be the addition of number of workers*memory per worker", default=4096)
@@ -114,6 +113,8 @@ if args.master:
     print("Yarn ProxyServer and HistoryServer start:")
     os.system(f"{HADOOP_HOME}/bin/yarn --daemon start proxyserver")
     os.system(f"{HADOOP_HOME}/bin/mapred --daemon start historyserver")
+    print("Zookeeper start")
+    os.system(f"{ZOO_HOME}/bin/zkServer.sh start")
  
 elif args.slave:
     print("HDFS DataNode start")
@@ -121,12 +122,8 @@ elif args.slave:
     print("YARN NodeManager start")
     os.system(f"{HADOOP_HOME}/bin/yarn --daemon start nodemanager")
 
-elif args.keeper:
-    print("Zookeeper start")
-    os.system(f"{ZOO_HOME}/bin/zkServer.sh start")
 
-if not args.keeper:
-    print("DONE launch")
-    print("Log files:")
-    os.system(f"cat {HADOOP_LOG_DIR}/*")
-    os.system(f"tail -f {HADOOP_LOG_DIR}/*")
+print("DONE launch")
+print("Log files:")
+os.system(f"cat {HADOOP_LOG_DIR}/*")
+os.system(f"tail -f {HADOOP_LOG_DIR}/*")
